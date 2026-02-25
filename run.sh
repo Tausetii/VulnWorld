@@ -18,6 +18,8 @@ echo "Stopping existing app..."
 pkill -f "python3.12 main.py" || true
 pkill -f "gunicorn" || true
 
+chmod +x run.sh
+
 sleep 2
 
 echo "Installing dependencies..."
