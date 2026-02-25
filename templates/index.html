@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VulnWorld</title>
+    <style>
+    /* Reset */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    body {
+        background-color: #0f0f0f;
+        color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 80px;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        font-weight: 300;
+        margin-bottom: 40px;
+        letter-spacing: 2px;
+    }
+
+    input {
+        background-color: transparent;
+        border: 2px solid #ffffff;
+        color: #ffffff;
+        padding: 12px 16px;
+        font-size: 16px;
+        width: 250px;
+        outline: none;
+        transition: all 0.3s ease;
+    }
+
+    input::placeholder {
+        color: #888;
+    }
+
+    input:focus {
+        background-color: #ffffff;
+        color: #000000;
+    }
+
+    button {
+        background-color: #ffffff;
+        color: #000000;
+        border: none;
+        padding: 12px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-left: 10px;
+        transition: all 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #cccccc;
+    }
+
+    ul {
+        list-style: none;
+        margin-top: 40px;
+        width: 320px;
+        padding: 0;
+    }
+
+    li {
+        background-color: #1a1a1a;
+        border: 1px solid #333;
+        padding: 14px 16px;
+        margin-bottom: 12px;
+        transition: all 0.3s ease;
+    }
+
+    li:hover {
+        background-color: #ffffff;
+        color: #000000;
+        transform: translateY(-2px);
+    }
+</style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        function search() {
+            var budget = $("#budget_input").val();
+            console.log(budget);
+            $.ajax({
+                url: "/search/" + budget,
+                method: "GET",
+                data: "budget=" + budget,
+                success: function(response) {
+                    $("#results_list").empty();
+                    for(var i = 0; i < response.length; i++) {
+                        var item = response[i];
+                        $("#results_list").append("<li>" + item.name + " - $" + item.price + "</li>");
+                    }
+                },
+                error: function(error) {
+                    console.error("Error during search:", error);
+                }
+
+                // render the results on the website
+            });
+        }
+
+    </script>
+</head>
+<body>
+    <h1>Welcome to VulnWorld</h1>
+    <input id = "budget_input" type="text" placeholder="Enter your budget"></input>
+    <button onclick="search()">Search</button>
+
+    <ul id="results_list"></ul>
+</body>
+</html>
