@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VulnWorld Gaming Cafe – Food Menu</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        body { background: #0f0f0f; color: #fff; min-height: 100vh; padding: 2rem; }
+        .nav { margin-bottom: 2rem; }
+        .nav a { color: #888; text-decoration: none; }
+        .nav a:hover { color: #fff; }
+        h1 { font-size: 1.8rem; font-weight: 300; margin-bottom: 1.5rem; }
+        input { background: transparent; border: 2px solid #fff; color: #fff; padding: 12px 16px; font-size: 16px; width: 200px; outline: none; }
+        input:focus { background: #fff; color: #000; }
+        button { background: #fff; color: #000; border: none; padding: 12px 20px; font-size: 16px; cursor: pointer; margin-left: 8px; }
+        button:hover { background: #ccc; }
+        #results_list { list-style: none; margin-top: 1.5rem; max-width: 320px; }
+        #results_list li { background: #1a1a1a; border: 1px solid #333; padding: 12px 16px; margin-bottom: 8px; }
+        #results_list li:hover { background: #333; }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        function search() {
+            var budget = $("#budget_input").val();
+            $.ajax({
+                url: "/search/" + budget,
+                method: "GET",
+                success: function(response) {
+                    $("#results_list").empty();
+                    for (var i = 0; i < response.length; i++) {
+                        var item = response[i];
+                        $("#results_list").append("<li>" + item.name + " – $" + item.price + "</li>");
+                    }
+                },
+                error: function() { $("#results_list").html("<li>No results or error.</li>"); }
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="nav"><a href="/welcome">← Back to Home</a></div>
+    <h1>Food Menu</h1>
+    <p style="color:#888; margin-bottom:1rem;">See what you can get within your budget.</p>
+    <input id="budget_input" type="text" placeholder="Enter your budget (e.g. 5)" />
+    <button onclick="search()">Search</button>
+    <ul id="results_list"></ul>
+</body>
+</html>
