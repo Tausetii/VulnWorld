@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 from pymongo import MongoClient
 
 MONGODB_URL = "mongodb+srv://warrenmax256897_db_user:BOx2RmRB4bHE7NNJ@search.7qokngi.mongodb.net/?appName=search"
@@ -37,16 +37,49 @@ app = Flask(__name__)
 
 #]
 
+# ---------------------------------------------------------------------------
+# VulnWorld – Gaming cafe (intentionally vulnerable for pentest practice)
+# Site structure:
+#   /           → redirects to /welcome
+#   /welcome    → gateway home (links to Menu, About, Contact)
+#   /menu       → food menu page (uses /search/<budget>)
+#   /about      → about the owners
+#   /contact    → contact information
+#   /search/<budget> → API: food items within budget (used by menu page)
+# ---------------------------------------------------------------------------
+
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return redirect('/welcome')
+
 
 @app.route('/welcome')
 def welcome():
-    return '<html><body><h1>Welcome to the Flask App!</h1></body></html>'
+    """Gateway home – entry point to the rest of the site."""
+    return render_template('welcome.html')
+
+
+@app.route('/menu')
+def menu():
+    """Food menu – search items by budget (uses /search/<budget>)."""
+    return render_template('menu.html')
+
+
+@app.route('/about')
+def about():
+    """About the owners of the gaming cafe."""
+    return render_template('about.html')
+
+
+@app.route('/contact')
+def contact():
+    """Contact information."""
+    return render_template('contact.html')
+
 
 @app.route('/search/<budget>', methods=['GET'])
 def search_food_items(budget):
+    """API: returns food items from DB with price <= budget."""
     results = []
     for item in collection.find():
         if item['price'] <= float(budget):
@@ -54,5 +87,7 @@ def search_food_items(budget):
             results.append(item)
     return results
 
-app.run(host = '0.0.0.0', port = 5050)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5050)
 
