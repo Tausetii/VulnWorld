@@ -5,27 +5,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VulnWorld Gaming Cafe – Contact</title>
     <style>
+        :root{
+            --bg1:#1b0b3a;
+            --bg2:#031a3b;
+            --card:rgba(255,255,255,.10);
+            --stroke:rgba(255,255,255,.22);
+            --text:#f8fbff;
+            --muted:rgba(248,251,255,.72);
+            --neon1:#ff3df2;
+            --neon2:#00e5ff;
+            --neon3:#7CFF6B;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
-        body { background: #0f0f0f; color: #fff; min-height: 100vh; padding: 2rem; max-width: 640px; margin: 0 auto; }
-        .nav { margin-bottom: 2rem; }
-        .nav a { color: #888; text-decoration: none; }
-        .nav a:hover { color: #fff; }
-        h1 { font-size: 1.8rem; font-weight: 300; margin-bottom: 1.5rem; }
-        p, address { color: #ccc; line-height: 1.6; margin-bottom: 1rem; }
+        body {
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+            background:
+                radial-gradient(900px 420px at 15% 12%, rgba(255,61,242,.30), transparent 60%),
+                radial-gradient(820px 460px at 85% 22%, rgba(0,229,255,.26), transparent 60%),
+                radial-gradient(700px 520px at 55% 90%, rgba(124,255,107,.16), transparent 62%),
+                linear-gradient(160deg, var(--bg1), var(--bg2));
+        }
+        .wrap{ max-width: 860px; margin: 0 auto; }
+        .nav { margin-bottom: 1.5rem; }
+        .nav a { color: var(--muted); text-decoration: none; }
+        .nav a:hover { color: var(--text); text-shadow: 0 0 12px rgba(0,229,255,.35); }
+        .panel{
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: 18px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 18px 55px rgba(0,0,0,.35);
+        }
+        h1 { font-size: 1.9rem; font-weight: 700; margin-bottom: 0.75rem; }
+        p, address { color: rgba(248,251,255,.82); line-height: 1.7; margin-bottom: 0.9rem; }
         address { font-style: normal; }
+        .grid{ display:grid; grid-template-columns: 1fr; gap: 12px; margin-top: 1rem; }
+        .tile{
+            border: 1px solid rgba(255,255,255,.18);
+            background: rgba(255,255,255,.07);
+            border-radius: 16px;
+            padding: 12px 14px;
+        }
+        .tile strong{ color: var(--text); }
     </style>
 </head>
 <body>
-    <div class="nav"><a href="/welcome">← Back to Home</a></div>
-    <h1>Contact</h1>
-    <p>Get in touch for reservations, events, or general enquiries.</p>
-    <address>
-        VulnWorld Gaming Cafe<br>
-        123 Arcade Lane<br>
-        Cyber City, CC 10101
-    </address>
-    <p>Email: info@vulnworld.local</p>
-    <p>Phone: (555) 123-4567</p>
-    <p>This page can be extended with a contact form or more details.</p>
+    <div class="wrap">
+        <div class="nav"><a href="/welcome">← Back to Home</a></div>
+        <div class="panel">
+            <h1>Contact</h1>
+            <p style="color: var(--muted);">Get in touch for reservations, events, or general enquiries.</p>
+            <div class="grid">
+                <div class="tile">
+                    <strong>Address</strong>
+                    <address>
+                        VulnWorld Gaming Cafe<br>
+                        123 Arcade Lane<br>
+                        Cyber City, CC 10101
+                    </address>
+                </div>
+                <div class="tile"><strong>Email</strong><p>info@vulnworld.local</p></div>
+                <div class="tile"><strong>Phone</strong><p>(555) 123-4567</p></div>
+            </div>
+            <p style="color: var(--muted); margin-top: 1rem;">This page can be extended with a contact form or more details.</p>
+        </div>
+    </div>
 </body>
 </html>
