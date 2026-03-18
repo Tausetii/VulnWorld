@@ -47,7 +47,7 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 18px 55px rgba(0,0,0,.35);
         }
-        nav { display: flex; gap: 0.9rem; flex-wrap: wrap; justify-content: center; }
+        nav { display: flex; gap: 0.9rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1.2rem; }
         nav a {
             display: block;
             background: linear-gradient(135deg, rgba(255,61,242,.22), rgba(0,229,255,.18));
@@ -81,7 +81,8 @@
         .hero img{
             display: block;
             width: 100%;
-            height: auto;
+            height: clamp(160px, 26vh, 240px);
+            object-fit: cover;
         }
         .hero-text{
             margin: 0 0 1.2rem;
@@ -95,10 +96,6 @@
     <h1>VulnWorld Gaming Cafe</h1>
     <p class="tagline">Play. Eat. Hang.</p>
     <div class="panel">
-        <div class="hero">
-            <img src="{{ url_for('static', filename='arcade-entrance.png') }}" alt="Neon arcade entrance" />
-        </div>
-        <p class="hero-text">Grab a wristband, pick a cabinet, and chase the high score. Tonight’s soundtrack is synthwave, the snacks are stacked, and the leaderboard is waiting.</p>
         <nav>
             <a href="/menu">Food Menu</a>
             <a href="/about">About Us</a>
@@ -106,6 +103,10 @@
             <a href="/contact">Contact</a>
             <a href="/chat">AI Chatbot</a>
         </nav>
+        <div class="hero">
+            <img src="{{ url_for('static', filename='arcade-entrance.png') }}" alt="Neon arcade entrance" />
+        </div>
+        <p class="hero-text">Grab a wristband, pick a cabinet, and chase the high score. Tonight’s soundtrack is synthwave, the snacks are stacked, and the leaderboard is waiting.</p>
     </div>
 </body>
 </html>
