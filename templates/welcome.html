@@ -68,12 +68,37 @@
                 0 0 22px rgba(255,61,242,.20),
                 0 0 22px rgba(0,229,255,.18);
         }
+        .hero{
+            width: 100%;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,.22);
+            overflow: hidden;
+            box-shadow:
+                0 16px 40px rgba(0,0,0,.35),
+                0 0 24px rgba(0,229,255,.12);
+            margin-bottom: 1rem;
+        }
+        .hero img{
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        .hero-text{
+            margin: 0 0 1.2rem;
+            color: rgba(248,251,255,.82);
+            line-height: 1.6;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <h1>VulnWorld Gaming Cafe</h1>
     <p class="tagline">Play. Eat. Hang.</p>
     <div class="panel">
+        <div class="hero">
+            <img src="{{ url_for('static', filename='arcade-entrance.png') }}" alt="Neon arcade entrance" />
+        </div>
+        <p class="hero-text">Grab a wristband, pick a cabinet, and chase the high score. Tonight’s soundtrack is synthwave, the snacks are stacked, and the leaderboard is waiting.</p>
         <nav>
             <a href="/menu">Food Menu</a>
             <a href="/about">About Us</a>
