@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VulnWorld Gaming Cafe – Special Events</title>
+    <style>
+        :root{
+            --bg1:#1b0b3a;
+            --bg2:#031a3b;
+            --card:rgba(255,255,255,.10);
+            --stroke:rgba(255,255,255,.22);
+            --text:#f8fbff;
+            --muted:rgba(248,251,255,.72);
+            --neon1:#ff3df2;
+            --neon2:#00e5ff;
+            --neon3:#7CFF6B;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        body {
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+            background:
+                radial-gradient(900px 420px at 15% 12%, rgba(255,61,242,.30), transparent 60%),
+                radial-gradient(820px 460px at 85% 22%, rgba(0,229,255,.26), transparent 60%),
+                radial-gradient(700px 520px at 55% 90%, rgba(124,255,107,.16), transparent 62%),
+                linear-gradient(160deg, var(--bg1), var(--bg2));
+        }
+        .wrap{ max-width: 860px; margin: 0 auto; }
+        .nav { margin-bottom: 1.5rem; }
+        .nav a { color: var(--muted); text-decoration: none; }
+        .nav a:hover { color: var(--text); text-shadow: 0 0 12px rgba(0,229,255,.35); }
+        .panel{
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: 18px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 18px 55px rgba(0,0,0,.35);
+        }
+        h1 { font-size: 1.9rem; font-weight: 800; margin-bottom: 0.6rem; }
+        p { color: rgba(248,251,255,.82); line-height: 1.7; margin-bottom: 1rem; }
+
+        .chips{ display:flex; gap: 10px; flex-wrap: wrap; margin-top: 0.75rem; }
+        .chip{
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,.20);
+            background: linear-gradient(135deg, rgba(255,61,242,.22), rgba(0,229,255,.16));
+            box-shadow: 0 0 18px rgba(255,61,242,.10);
+        }
+        .grid{ display:grid; grid-template-columns: 1fr; gap: 12px; margin-top: 1rem; }
+        .tile{
+            border: 1px solid rgba(255,255,255,.18);
+            background: rgba(255,255,255,.07);
+            border-radius: 16px;
+            padding: 12px 14px;
+        }
+        .tile strong{ color: var(--text); }
+        .tile p{ margin: 0.5rem 0 0; color: rgba(248,251,255,.78); }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="nav"><a href="/welcome">← Back to Home</a></div>
+        <div class="panel">
+            <h1>Special Events</h1>
+            <p style="color: var(--muted);">Weekly and seasonal events hosted at the cafe.</p>
+
+            <div class="chips">
+                <div class="chip">Arcade Nights</div>
+                <div class="chip">LAN Parties</div>
+                <div class="chip">Retro Consoles</div>
+            </div>
+
+            <div class="grid">
+                <div class="tile">
+                    <strong>Arcade Nights</strong>
+                    <p>High-score challenges, themed cabinets, and small prizes.</p>
+                </div>
+                <div class="tile">
+                    <strong>LAN Parties</strong>
+                    <p>Bring your squad. Sign-ups and brackets can live here later.</p>
+                </div>
+                <div class="tile">
+                    <strong>Retro Consoles</strong>
+                    <p>Classic co-op sessions and rotating retro titles.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

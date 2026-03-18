@@ -45,6 +45,7 @@ app = Flask(__name__)
 #   /menu       → food menu page (uses /search/<budget>)
 #   /about      → about the owners
 #   /contact    → contact information
+#   /events     → special events held at the cafe
 #   /chat       → AI chatbot (logic to be added later)
 #   /search/<budget> → API: food items within budget (used by menu page)
 # ---------------------------------------------------------------------------
@@ -76,6 +77,12 @@ def about():
 def contact():
     """Contact information."""
     return render_template('contact.html')
+
+
+@app.route('/events')
+def events():
+    """Special events held at the gaming cafe."""
+    return render_template('events.html')
 
 
 @app.route('/chat')
