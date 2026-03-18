@@ -5,32 +5,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VulnWorld Gaming Cafe – Welcome</title>
     <style>
+        :root{
+            --bg1:#1b0b3a;
+            --bg2:#031a3b;
+            --card:rgba(255,255,255,.10);
+            --stroke:rgba(255,255,255,.22);
+            --text:#f8fbff;
+            --muted:rgba(248,251,255,.75);
+            --neon1:#ff3df2;
+            --neon2:#00e5ff;
+            --neon3:#7CFF6B;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
-        body { background: #0f0f0f; color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
-        h1 { font-size: 2.2rem; font-weight: 300; margin-bottom: 0.5rem; letter-spacing: 2px; }
-        .tagline { color: #888; margin-bottom: 3rem; }
-        nav { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+        body {
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2.5rem 1.5rem;
+            background:
+                radial-gradient(900px 400px at 20% 10%, rgba(255,61,242,.35), transparent 60%),
+                radial-gradient(800px 420px at 85% 20%, rgba(0,229,255,.30), transparent 60%),
+                radial-gradient(700px 520px at 50% 90%, rgba(124,255,107,.18), transparent 62%),
+                linear-gradient(160deg, var(--bg1), var(--bg2));
+        }
+        h1 {
+            font-size: 2.35rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+            letter-spacing: 1px;
+            text-shadow: 0 0 14px rgba(0,229,255,.35);
+        }
+        .tagline { color: var(--muted); margin-bottom: 2rem; }
+        .panel{
+            width: min(860px, 100%);
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: 18px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 18px 55px rgba(0,0,0,.35);
+        }
+        nav { display: flex; gap: 0.9rem; flex-wrap: wrap; justify-content: center; }
         nav a {
             display: block;
-            background: #1a1a1a;
-            border: 2px solid #333;
-            color: #fff;
-            padding: 14px 24px;
+            background: linear-gradient(135deg, rgba(255,61,242,.22), rgba(0,229,255,.18));
+            border: 1px solid rgba(255,255,255,.28);
+            color: var(--text);
+            padding: 14px 22px;
             text-decoration: none;
             font-size: 1rem;
-            transition: all 0.3s ease;
+            border-radius: 14px;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+            box-shadow: 0 0 0 rgba(0,0,0,0);
         }
-        nav a:hover { background: #fff; color: #000; border-color: #fff; transform: translateY(-2px); }
+        nav a:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.08);
+            box-shadow:
+                0 10px 26px rgba(0,0,0,.32),
+                0 0 22px rgba(255,61,242,.20),
+                0 0 22px rgba(0,229,255,.18);
+        }
     </style>
 </head>
 <body>
     <h1>VulnWorld Gaming Cafe</h1>
     <p class="tagline">Play. Eat. Hang.</p>
-    <nav>
-        <a href="/menu">Food Menu</a>
-        <a href="/about">About Us</a>
-        <a href="/contact">Contact</a>
-        <a href="/chat">AI Chatbot</a>
-    </nav>
+    <div class="panel">
+        <nav>
+            <a href="/menu">Food Menu</a>
+            <a href="/about">About Us</a>
+            <a href="/contact">Contact</a>
+            <a href="/chat">AI Chatbot</a>
+        </nav>
+    </div>
 </body>
 </html>
