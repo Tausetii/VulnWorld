@@ -1,4 +1,6 @@
-from flask import Flask, render_template, redirect
+import re
+
+from flask import Flask, render_template, redirect, request
 from pymongo import MongoClient
 
 MONGODB_URL = "mongodb+srv://warrenmax256897_db_user:BOx2RmRB4bHE7NNJ@search.7qokngi.mongodb.net/?appName=search"
@@ -8,6 +10,28 @@ db = client['search-vuln-world']
 collection = db['food']
 
 app = Flask(__name__)
+
+NOSQL_PAYLOAD_PATTERNS = [
+    r"\$ne",
+    r"\$gt",
+    r"\$gte",
+    r"\$lt",
+    r"\$lte",
+    r"\$or",
+    r"\$and",
+    r"\$where",
+    r"\$regex",
+    r"\$exists",
+    r"\{.*\}",
+    r"null",
+    r"true|false",
+]
+
+MOCK_CHALLENGE_RESULTS = [
+    {"name": "Admin Combo Platter", "price": 0.0},
+    {"name": "Staff-Only Energy Stack", "price": 0.01},
+    {"name": "Internal Test Meal", "price": 0.02},
+]
 
 # data = [{
 #
@@ -94,9 +118,25 @@ def chat():
 @app.route('/search/<budget>', methods=['GET'])
 def search_food_items(budget):
     """API: returns food items from DB with price <= budget."""
+    candidate = budget.strip()
+    lowered = candidate.lower()
+
+    if any(re.search(pattern, lowered) for pattern in NOSQL_PAYLOAD_PATTERNS):
+        app.logger.warning(
+            "NoSQL-like input detected from %s: %r",
+            request.remote_addr,
+            budget,
+        )
+        return MOCK_CHALLENGE_RESULTS
+
+    try:
+        max_budget = float(candidate)
+    except ValueError:
+        return []
+
     results = []
     for item in collection.find():
-        if item['price'] <= float(budget):
+        if item['price'] <= max_budget:
             item["_id"] = str(item["_id"])
             results.append(item)
     return results

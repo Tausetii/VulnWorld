@@ -82,7 +82,7 @@
         function search() {
             var budget = $("#budget_input").val();
             $.ajax({
-                url: "/search/" + budget,
+                url: "/search/" + encodeURIComponent(budget),
                 method: "GET",
                 success: function(response) {
                     $("#results_list").empty();
