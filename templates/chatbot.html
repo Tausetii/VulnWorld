@@ -63,7 +63,31 @@
             overflow-y: auto;
             margin-bottom: 1rem;
         }
-        .messages p { color: rgba(248,251,255,.82); font-style: italic; }
+        .msg {
+            max-width: 80%;
+            margin-bottom: 0.7rem;
+            padding: 10px 12px;
+            border-radius: 12px;
+            line-height: 1.45;
+            word-wrap: break-word;
+        }
+        .msg.user {
+            margin-left: auto;
+            background: rgba(0,229,255,.18);
+            border: 1px solid rgba(0,229,255,.35);
+        }
+        .msg.bot {
+            margin-right: auto;
+            background: rgba(255,61,242,.16);
+            border: 1px solid rgba(255,61,242,.32);
+        }
+        .msg.system {
+            margin-right: auto;
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.2);
+            color: rgba(248,251,255,.82);
+            font-style: italic;
+        }
         .input-row { display: flex; gap: 10px; flex-wrap: wrap; }
         .input-row input {
             flex: 1;
@@ -94,6 +118,55 @@
         }
         .input-row button:hover { transform: translateY(-1px); filter: brightness(1.05); }
     </style>
+    <script>
+        async function sendMessage() {
+            const inputEl = document.getElementById("chat_input");
+            const messagesEl = document.getElementById("messages");
+            const text = inputEl.value.trim();
+
+            if (!text) {
+                return;
+            }
+
+            addMessage("user", text);
+            inputEl.value = "";
+
+            try {
+                const response = await fetch("/chat/message", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: text })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    addMessage("bot", data.reply || "No reply returned.");
+                } else {
+                    addMessage("system", data.reply || "There was a problem sending your message.");
+                }
+            } catch (error) {
+                addMessage("system", "Network error while contacting chat endpoint.");
+            }
+
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        function addMessage(type, content) {
+            const messagesEl = document.getElementById("messages");
+            const bubble = document.createElement("div");
+            bubble.className = "msg " + type;
+            bubble.textContent = content;
+            messagesEl.appendChild(bubble);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        function onChatKeyDown(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="nav"><a href="/welcome">← Back to Home</a></div>
@@ -101,12 +174,12 @@
         <div class="panel">
             <h1>AI Assistant</h1>
             <p class="sub">Ask about our cafe, menu, or anything else.</p>
-            <div class="messages">
-                <p>Chat functionality will be added here.</p>
+            <div class="messages" id="messages">
+                <div class="msg system">Chat is ready. Send a message to start.</div>
             </div>
             <div class="input-row">
-                <input type="text" placeholder="Type your message..." />
-                <button>Send</button>
+                <input id="chat_input" type="text" placeholder="Type your message..." onkeydown="onChatKeyDown(event)" />
+                <button onclick="sendMessage()">Send</button>
             </div>
         </div>
     </div>

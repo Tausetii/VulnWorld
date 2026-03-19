@@ -1,6 +1,6 @@
 import re
 
-from flask import Flask, render_template, redirect, request
+from flask import Flask, jsonify, render_template, redirect, request
 from pymongo import MongoClient
 
 MONGODB_URL = "mongodb+srv://warrenmax256897_db_user:BOx2RmRB4bHE7NNJ@search.7qokngi.mongodb.net/?appName=search"
@@ -113,6 +113,28 @@ def events():
 def chat():
     """AI chatbot – logic to be added later."""
     return render_template('chatbot.html')
+
+
+@app.route('/chat/message', methods=['POST'])
+def chat_message():
+    """Lightweight chat endpoint (no persistence)."""
+    payload = request.get_json(silent=True) or {}
+    user_message = str(payload.get("message", "")).strip()
+
+    if not user_message:
+        return jsonify({"reply": "Type a message so I can help."}), 400
+
+    lowered = user_message.lower()
+    if "menu" in lowered or "food" in lowered:
+        reply = "Our menu search is on the Menu page. Enter a budget to see what you can grab."
+    elif "event" in lowered:
+        reply = "Special Events are listed on the Events page: Arcade Nights, LAN Parties, and Retro Consoles."
+    elif "contact" in lowered or "phone" in lowered:
+        reply = "You can find contact details on the Contact page, including email and phone."
+    else:
+        reply = f"You said: {user_message}"
+
+    return jsonify({"reply": reply})
 
 
 @app.route('/search/<budget>', methods=['GET'])
