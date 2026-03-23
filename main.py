@@ -71,6 +71,7 @@ MOCK_CHALLENGE_RESULTS = [
 #   /contact    → contact information
 #   /events     → special events held at the cafe
 #   /chat       → AI chatbot (logic to be added later)
+#   /admin      → admin panel (not linked from public nav)
 #   /search/<budget> → API: food items within budget (used by menu page)
 # ---------------------------------------------------------------------------
 
@@ -113,6 +114,12 @@ def events():
 def chat():
     """AI chatbot – logic to be added later."""
     return render_template('chatbot.html')
+
+
+@app.route('/admin')
+def admin():
+    """Internal-style admin panel (not listed on welcome page)."""
+    return render_template('admin.html')
 
 
 @app.route('/chat/message', methods=['POST'])
