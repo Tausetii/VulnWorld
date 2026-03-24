@@ -15,6 +15,8 @@
             --neon1:#ff3df2;
             --neon2:#00e5ff;
             --neon3:#7CFF6B;
+            --page-pad: clamp(1rem, 4vw, 3rem);
+            --content-max: min(1440px, 100%);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
         body {
@@ -22,45 +24,67 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding: 2.5rem 1.5rem;
+            align-items: stretch;
+            width: 100%;
             background:
                 radial-gradient(900px 400px at 20% 10%, rgba(255,61,242,.35), transparent 60%),
                 radial-gradient(800px 420px at 85% 20%, rgba(0,229,255,.30), transparent 60%),
                 radial-gradient(700px 520px at 50% 90%, rgba(124,255,107,.18), transparent 62%),
                 linear-gradient(160deg, var(--bg1), var(--bg2));
         }
-        h1 {
-            font-size: 2.35rem;
+        .site-header {
+            width: 100%;
+            padding: 1.75rem var(--page-pad) 1.25rem;
+            border-bottom: 1px solid rgba(255,255,255,.12);
+            background: linear-gradient(180deg, rgba(0,0,0,.22), transparent);
+        }
+        .header-inner {
+            max-width: var(--content-max);
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 1.25rem 2rem;
+        }
+        .brand h1 {
+            font-size: clamp(1.75rem, 4vw, 2.65rem);
             font-weight: 600;
-            margin-bottom: 0.35rem;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             text-shadow: 0 0 14px rgba(0,229,255,.35);
+            line-height: 1.15;
         }
-        .tagline { color: var(--muted); margin-bottom: 2rem; }
-        .panel{
-            width: min(860px, 100%);
-            background: var(--card);
-            border: 1px solid var(--stroke);
-            border-radius: 18px;
-            padding: 1.5rem;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 18px 55px rgba(0,0,0,.35);
+        .tagline {
+            color: var(--muted);
+            margin-top: 0.35rem;
+            font-size: 1.05rem;
         }
-        nav { display: flex; gap: 0.9rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1.2rem; }
-        nav a {
-            display: block;
+        .main-nav {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.65rem 0.85rem;
+            flex: 1 1 auto;
+            min-width: min(100%, 280px);
+        }
+        .main-nav a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             background: linear-gradient(135deg, rgba(255,61,242,.22), rgba(0,229,255,.18));
             border: 1px solid rgba(255,255,255,.28);
             color: var(--text);
-            padding: 14px 22px;
+            padding: 12px 20px;
             text-decoration: none;
-            font-size: 1rem;
-            border-radius: 14px;
+            font-size: 0.98rem;
+            font-weight: 500;
+            border-radius: 12px;
+            white-space: nowrap;
             transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
             box-shadow: 0 0 0 rgba(0,0,0,0);
         }
-        nav a:hover {
+        .main-nav a:hover {
             transform: translateY(-2px);
             filter: brightness(1.08);
             box-shadow:
@@ -68,50 +92,113 @@
                 0 0 22px rgba(255,61,242,.20),
                 0 0 22px rgba(0,229,255,.18);
         }
-        .hero{
+        .hero-section {
+            flex: 1;
             width: 100%;
-            border-radius: 16px;
+            padding: 2rem var(--page-pad) 3rem;
+            display: flex;
+            align-items: center;
+        }
+        .hero-inner {
+            max-width: var(--content-max);
+            margin: 0 auto;
+            width: 100%;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+            gap: clamp(1.5rem, 4vw, 3rem);
+            align-items: center;
+        }
+        @media (max-width: 900px) {
+            .hero-inner {
+                grid-template-columns: 1fr;
+            }
+            .header-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .main-nav {
+                justify-content: flex-start;
+                width: 100%;
+            }
+        }
+        .hero-copy {
+            padding-right: clamp(0px, 2vw, 1rem);
+        }
+        .hero-copy .lead {
+            font-size: clamp(1.05rem, 2vw, 1.2rem);
+            color: rgba(248,251,255,.88);
+            line-height: 1.65;
+            max-width: 38ch;
+        }
+        .hero-visual {
+            width: 100%;
+            border-radius: 18px;
             border: 1px solid rgba(255,255,255,.22);
             overflow: hidden;
             box-shadow:
-                0 16px 40px rgba(0,0,0,.35),
-                0 0 24px rgba(0,229,255,.12);
-            margin-bottom: 1rem;
-            background: rgba(0,0,0,.18);
+                0 20px 50px rgba(0,0,0,.4),
+                0 0 30px rgba(0,229,255,.1);
+            background:
+                linear-gradient(145deg, rgba(255,61,242,.08), rgba(0,229,255,.06)),
+                rgba(0,0,0,.2);
+            min-height: min(320px, 40vh);
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .hero img{
+        .hero-visual img {
             display: block;
             width: 100%;
-            max-height: clamp(160px, 26vh, 240px);
             height: auto;
+            max-height: clamp(200px, 38vh, 420px);
             object-fit: contain;
         }
-        .hero-text{
-            margin: 0 0 1.2rem;
-            color: rgba(248,251,255,.82);
-            line-height: 1.6;
-            text-align: center;
+        .accent-bar {
+            height: 4px;
+            width: 72px;
+            border-radius: 4px;
+            margin-bottom: 1.25rem;
+            background: linear-gradient(90deg, var(--neon1), var(--neon2), var(--neon3));
+            box-shadow: 0 0 16px rgba(0,229,255,.35);
+        }
+        .section-title {
+            font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+            font-weight: 600;
+            margin-bottom: 0.85rem;
+            letter-spacing: 0.3px;
+            color: var(--text);
+            text-shadow: 0 0 22px rgba(0,229,255,.3);
         }
     </style>
 </head>
 <body>
-    <h1>VulnWorld Gaming Cafe</h1>
-    <p class="tagline">Play. Eat. Hang.</p>
-    <div class="panel">
-        <nav>
-            <a href="/menu">Food Menu</a>
-            <a href="/about">About Us</a>
-            <a href="/events">Special Events</a>
-            <a href="/contact">Contact</a>
-            <a href="/chat">AI Chatbot</a>
-        </nav>
-        <div class="hero">
-            <img src="{{ url_for('static', filename='arcade-entrance.png') }}" alt="Neon arcade entrance" />
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="brand">
+                <h1>VulnWorld Gaming Cafe</h1>
+                <p class="tagline">Play. Eat. Hang.</p>
+            </div>
+            <nav class="main-nav" aria-label="Main">
+                <a href="/menu">Food Menu</a>
+                <a href="/about">About Us</a>
+                <a href="/events">Special Events</a>
+                <a href="/contact">Contact</a>
+                <a href="/chat">AI Chatbot</a>
+            </nav>
         </div>
-        <p class="hero-text">Grab a wristband, pick a cabinet, and chase the high score. Tonight’s soundtrack is synthwave, the snacks are stacked, and the leaderboard is waiting.</p>
-    </div>
+    </header>
+
+    <section class="hero-section" aria-labelledby="hero-heading">
+        <div class="hero-inner">
+            <div class="hero-copy">
+                <div class="accent-bar" aria-hidden="true"></div>
+                <h2 id="hero-heading" class="section-title">Get in the game</h2>
+                <p class="lead">Grab a wristband, pick a cabinet, and chase the high score. Tonight’s soundtrack is synthwave, the snacks are stacked, and the leaderboard is waiting.</p>
+            </div>
+            <div class="hero-visual">
+                <img src="{{ url_for('static', filename='arcade-entrance.png') }}" alt="Neon arcade entrance" />
+            </div>
+        </div>
+    </section>
 </body>
 </html>
