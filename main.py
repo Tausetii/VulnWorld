@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 
 from flask import Flask, flash, jsonify, redirect, render_template, request, session, url_for
 from pymongo import MongoClient
+from pymongo.errors import DuplicateKeyError
 from werkzeug.security import check_password_hash, generate_password_hash
 
 MONGODB_URL = "mongodb+srv://warrenmax256897_db_user:BOx2RmRB4bHE7NNJ@search.7qokngi.mongodb.net/?appName=search"
@@ -12,6 +13,12 @@ client = MongoClient(MONGODB_URL)
 db = client['search-vuln-world']
 collection = db['food']
 login_collection = db['login']
+flag_solves = db['flag_solves']
+
+try:
+    flag_solves.create_index([("username", 1), ("flag_id", 1)], unique=True)
+except Exception:
+    pass
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev-vulnworld-session-key")
@@ -40,6 +47,26 @@ MOCK_CHALLENGE_RESULTS = [
 
 USERNAME_PATTERN = re.compile(r"^[A-Za-z0-9_\-.]{2,64}$")
 
+# CTF: flag_id -> display name, points, and secret string (server-side only).
+CTF_FLAGS = {
+    "test": {
+        "name": "Test",
+        "points": 10,
+        "secret": "VulnWorld{Test}",
+    },
+}
+
+
+def _ctf_user_points(username: str) -> int:
+    total = 0
+    for doc in flag_solves.find({"username": username}):
+        total += int(doc.get("points", 0))
+    return total
+
+
+def _ctf_solved_flag_ids(username: str) -> set:
+    return {d["flag_id"] for d in flag_solves.find({"username": username}, {"flag_id": 1})}
+
 
 def _verify_stored_password(stored: str, password: str) -> bool:
     if not stored:
@@ -54,6 +81,8 @@ def account():
     """Sign up, log in, or view profile when authenticated."""
     member_since = None
     username = session.get("username")
+    ctf_points = 0
+    test_flag_solved = False
     if username:
         doc = login_collection.find_one({"username": username})
         if doc and doc.get("created_at"):
@@ -62,7 +91,14 @@ def account():
                 member_since = raw.strftime("%B %d, %Y")
             else:
                 member_since = str(raw)
-    return render_template("account.html", member_since=member_since)
+        ctf_points = _ctf_user_points(username)
+        test_flag_solved = "test" in _ctf_solved_flag_ids(username)
+    return render_template(
+        "account.html",
+        member_since=member_since,
+        ctf_points=ctf_points,
+        test_flag_solved=test_flag_solved,
+    )
 
 
 @app.route('/account/register', methods=['POST'])
@@ -119,6 +155,48 @@ def account_logout():
     flash("You have been logged out.", "success")
     return redirect(url_for("account"))
 
+
+@app.route('/account/flag', methods=['POST'])
+def account_submit_flag():
+    username = session.get("username")
+    if not username:
+        flash("Log in to submit flags.", "error")
+        return redirect(url_for("account"))
+
+    flag_id = (request.form.get("flag_id") or "").strip()
+    submitted = (request.form.get("flag") or "").strip()
+
+    meta = CTF_FLAGS.get(flag_id)
+    if not meta:
+        flash("Unknown flag challenge.", "error")
+        return redirect(url_for("account"))
+
+    if flag_solves.find_one({"username": username, "flag_id": flag_id}):
+        flash(f'You already solved "{meta["name"]}".', "error")
+        return redirect(url_for("account"))
+
+    if submitted != meta["secret"]:
+        flash("Incorrect flag. Keep hunting!", "error")
+        return redirect(url_for("account"))
+
+    points = int(meta["points"])
+    try:
+        flag_solves.insert_one(
+            {
+                "username": username,
+                "flag_id": flag_id,
+                "flag_name": meta["name"],
+                "points": points,
+                "solved_at": datetime.now(timezone.utc),
+            }
+        )
+    except DuplicateKeyError:
+        flash(f'You already solved "{meta["name"]}".', "error")
+        return redirect(url_for("account"))
+
+    flash(f'Correct! "{meta["name"]}" solved for +{points} points.', "success")
+    return redirect(url_for("account"))
+
 # data = [{
 #
  #   "name" : "Coffee",
@@ -158,7 +236,7 @@ def account_logout():
 #   /events     → special events held at the cafe
 #   /chat       → AI chatbot (logic to be added later)
 #   /admin      → admin panel (not linked from public nav)
-#   /account    → sign up, log in, profile (MongoDB collection `login`)
+#   /account    → sign up, log in, profile (MongoDB collections `login`, `flag_solves`)
 #   /search/<budget> → API: food items within budget (used by menu page)
 # ---------------------------------------------------------------------------
 
