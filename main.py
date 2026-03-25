@@ -1,15 +1,20 @@
+import os
 import re
+from datetime import datetime, timezone
 
-from flask import Flask, jsonify, render_template, redirect, request
+from flask import Flask, flash, jsonify, redirect, render_template, request, session, url_for
 from pymongo import MongoClient
+from werkzeug.security import check_password_hash, generate_password_hash
 
 MONGODB_URL = "mongodb+srv://warrenmax256897_db_user:BOx2RmRB4bHE7NNJ@search.7qokngi.mongodb.net/?appName=search"
 client = MongoClient(MONGODB_URL)
 
 db = client['search-vuln-world']
 collection = db['food']
+login_collection = db['login']
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev-vulnworld-session-key")
 
 NOSQL_PAYLOAD_PATTERNS = [
     r"\$ne",
@@ -32,6 +37,87 @@ MOCK_CHALLENGE_RESULTS = [
     {"name": "Staff-Only Energy Stack", "price": 0.01},
     {"name": "Internal Test Meal", "price": 0.02},
 ]
+
+USERNAME_PATTERN = re.compile(r"^[A-Za-z0-9_\-.]{2,64}$")
+
+
+def _verify_stored_password(stored: str, password: str) -> bool:
+    if not stored:
+        return False
+    if stored.startswith("pbkdf2:") or stored.startswith("scrypt:"):
+        return check_password_hash(stored, password)
+    return stored == password
+
+
+@app.route('/account', methods=['GET'])
+def account():
+    """Sign up, log in, or view profile when authenticated."""
+    member_since = None
+    username = session.get("username")
+    if username:
+        doc = login_collection.find_one({"username": username})
+        if doc and doc.get("created_at"):
+            raw = doc["created_at"]
+            if hasattr(raw, "strftime"):
+                member_since = raw.strftime("%B %d, %Y")
+            else:
+                member_since = str(raw)
+    return render_template("account.html", member_since=member_since)
+
+
+@app.route('/account/register', methods=['POST'])
+def account_register():
+    username = (request.form.get("username") or "").strip()
+    password = request.form.get("password") or ""
+
+    if not USERNAME_PATTERN.match(username):
+        flash("Username must be 2–64 characters (letters, numbers, _, -, .).", "error")
+        return redirect(url_for("account"))
+
+    if len(password) < 6:
+        flash("Password must be at least 6 characters.", "error")
+        return redirect(url_for("account"))
+
+    if login_collection.find_one({"username": username}):
+        flash("That username is already taken.", "error")
+        return redirect(url_for("account"))
+
+    login_collection.insert_one(
+        {
+            "username": username,
+            "password": generate_password_hash(password),
+            "created_at": datetime.now(timezone.utc),
+        }
+    )
+    session["username"] = username
+    flash("Account created. You're signed in.", "success")
+    return redirect(url_for("account"))
+
+
+@app.route('/account/login', methods=['POST'])
+def account_login():
+    username = (request.form.get("username") or "").strip()
+    password = request.form.get("password") or ""
+
+    if not username or not password:
+        flash("Enter both username and password.", "error")
+        return redirect(url_for("account"))
+
+    doc = login_collection.find_one({"username": username})
+    if not doc or not _verify_stored_password(doc.get("password", ""), password):
+        flash("Invalid username or password.", "error")
+        return redirect(url_for("account"))
+
+    session["username"] = username
+    flash("Signed in successfully.", "success")
+    return redirect(url_for("account"))
+
+
+@app.route('/account/logout', methods=['POST'])
+def account_logout():
+    session.pop("username", None)
+    flash("You have been logged out.", "success")
+    return redirect(url_for("account"))
 
 # data = [{
 #
@@ -72,6 +158,7 @@ MOCK_CHALLENGE_RESULTS = [
 #   /events     → special events held at the cafe
 #   /chat       → AI chatbot (logic to be added later)
 #   /admin      → admin panel (not linked from public nav)
+#   /account    → sign up, log in, profile (MongoDB collection `login`)
 #   /search/<budget> → API: food items within budget (used by menu page)
 # ---------------------------------------------------------------------------
 

@@ -47,6 +47,39 @@
             justify-content: space-between;
             gap: 1.25rem 2rem;
         }
+        .header-right {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.65rem 0.85rem;
+            flex: 1 1 auto;
+            min-width: min(100%, 200px);
+        }
+        .btn-auth {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 22px;
+            text-decoration: none;
+            font-size: 0.98rem;
+            font-weight: 600;
+            border-radius: 12px;
+            white-space: nowrap;
+            border: 1px solid rgba(255,255,255,.35);
+            background: rgba(255,255,255,.12);
+            color: var(--text);
+            transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+        }
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.08);
+            box-shadow: 0 10px 26px rgba(0,0,0,.32);
+        }
+        .btn-auth-primary {
+            background: linear-gradient(135deg, rgba(255,61,242,.35), rgba(0,229,255,.28));
+            border-color: rgba(255,255,255,.4);
+        }
         .brand h1 {
             font-size: clamp(1.75rem, 4vw, 2.65rem);
             font-weight: 600;
@@ -116,9 +149,12 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
+            .header-right {
+                width: 100%;
+                justify-content: flex-start;
+            }
             .main-nav {
                 justify-content: flex-start;
-                width: 100%;
             }
         }
         .hero-copy {
@@ -177,13 +213,20 @@
                 <h1>VulnWorld Gaming Cafe</h1>
                 <p class="tagline">Play. Eat. Hang.</p>
             </div>
-            <nav class="main-nav" aria-label="Main">
-                <a href="/menu">Food Menu</a>
-                <a href="/about">About Us</a>
-                <a href="/events">Special Events</a>
-                <a href="/contact">Contact</a>
-                <a href="/chat">AI Chatbot</a>
-            </nav>
+            <div class="header-right">
+                <nav class="main-nav" aria-label="Main">
+                    <a href="/menu">Food Menu</a>
+                    <a href="/about">About Us</a>
+                    <a href="/events">Special Events</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/chat">AI Chatbot</a>
+                </nav>
+                {% if session.get('username') %}
+                    <a class="btn-auth" href="{{ url_for('account') }}">Account</a>
+                {% else %}
+                    <a class="btn-auth btn-auth-primary" href="{{ url_for('account') }}">Sign up</a>
+                {% endif %}
+            </div>
         </div>
     </header>
 

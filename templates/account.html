@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VulnWorld Gaming Cafe – Account</title>
+    <style>
+        :root{
+            --bg1:#1b0b3a;
+            --bg2:#031a3b;
+            --card:rgba(255,255,255,.10);
+            --stroke:rgba(255,255,255,.22);
+            --text:#f8fbff;
+            --muted:rgba(248,251,255,.75);
+            --neon1:#ff3df2;
+            --neon2:#00e5ff;
+            --neon3:#7CFF6B;
+            --page-pad: clamp(1rem, 4vw, 3rem);
+            --content-max: min(900px, 100%);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        body {
+            color: var(--text);
+            min-height: 100vh;
+            padding: 1.75rem var(--page-pad) 2.5rem;
+            background:
+                radial-gradient(900px 400px at 20% 10%, rgba(255,61,242,.35), transparent 60%),
+                radial-gradient(800px 420px at 85% 20%, rgba(0,229,255,.30), transparent 60%),
+                radial-gradient(700px 520px at 50% 90%, rgba(124,255,107,.18), transparent 62%),
+                linear-gradient(160deg, var(--bg1), var(--bg2));
+        }
+        .wrap {
+            max-width: var(--content-max);
+            margin: 0 auto;
+        }
+        .back {
+            margin-bottom: 1.25rem;
+        }
+        .back a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+        .back a:hover {
+            color: var(--text);
+            text-shadow: 0 0 12px rgba(0,229,255,.35);
+        }
+        h1 {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 14px rgba(0,229,255,.35);
+        }
+        .sub {
+            color: var(--muted);
+            margin-bottom: 1.5rem;
+        }
+        .flash {
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255,255,255,.2);
+        }
+        .flash.error {
+            background: rgba(255,80,80,.15);
+            color: #ffd4d4;
+        }
+        .flash.success {
+            background: rgba(124,255,107,.12);
+            color: #e8ffe8;
+        }
+        .panel{
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: 18px;
+            padding: 1.5rem 1.75rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 18px 55px rgba(0,0,0,.35);
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        @media (max-width: 700px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+        .form-block h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: rgba(248,251,255,.95);
+        }
+        label {
+            display: block;
+            font-size: 0.88rem;
+            color: var(--muted);
+            margin-bottom: 0.35rem;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 0.9rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,.25);
+            background: rgba(0,0,0,.25);
+            color: var(--text);
+            font-size: 1rem;
+        }
+        input:focus {
+            outline: none;
+            border-color: rgba(0,229,255,.55);
+            box-shadow: 0 0 0 2px rgba(0,229,255,.15);
+        }
+        button[type="submit"] {
+            width: 100%;
+            margin-top: 0.25rem;
+            padding: 12px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,.28);
+            background: linear-gradient(135deg, rgba(255,61,242,.28), rgba(0,229,255,.22));
+            color: var(--text);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.15s ease, filter 0.15s ease;
+        }
+        button[type="submit"]:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.08);
+        }
+        .profile-user {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            word-break: break-word;
+        }
+        .profile-meta {
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .profile-meta strong { color: rgba(248,251,255,.88); }
+        .logout-form {
+            margin-top: 1.25rem;
+        }
+        .logout-form button {
+            width: auto;
+            display: inline-block;
+            background: rgba(255,255,255,.08);
+        }
+        hr.split {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,.15);
+            margin: 0.5rem 0 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <p class="back"><a href="{{ url_for('welcome') }}">← Back to Welcome</a></p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, msg in messages %}
+                    <div class="flash {{ category }}">{{ msg }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if session.get('username') %}
+            <h1>Your account</h1>
+            <p class="sub">Signed in as a VulnWorld member.</p>
+            <div class="panel">
+                <p class="profile-user">{{ session.username }}</p>
+                <div class="profile-meta">
+                    {% if member_since %}
+                        <p><strong>Member since</strong> {{ member_since }}</p>
+                    {% else %}
+                        <p>Thanks for playing with us. Your session is active on this browser.</p>
+                    {% endif %}
+                </div>
+                <form class="logout-form" method="post" action="{{ url_for('account_logout') }}">
+                    <button type="submit">Log out</button>
+                </form>
+            </div>
+        {% else %}
+            <h1>Account</h1>
+            <p class="sub">Create an account or sign in with your username and password.</p>
+            <div class="panel">
+                <div class="grid-2">
+                    <div class="form-block">
+                        <h2>Sign up</h2>
+                        <form method="post" action="{{ url_for('account_register') }}" autocomplete="off">
+                            <label for="reg_user">Username</label>
+                            <input id="reg_user" name="username" type="text" required minlength="2" maxlength="64" pattern="[A-Za-z0-9_\-.]+" title="Letters, numbers, underscore, hyphen, dot">
+                            <label for="reg_pass">Password</label>
+                            <input id="reg_pass" name="password" type="password" required minlength="6" maxlength="128">
+                            <button type="submit">Register</button>
+                        </form>
+                    </div>
+                    <div class="form-block">
+                        <h2>Log in</h2>
+                        <form method="post" action="{{ url_for('account_login') }}" autocomplete="off">
+                            <label for="login_user">Username</label>
+                            <input id="login_user" name="username" type="text" required maxlength="64">
+                            <label for="login_pass">Password</label>
+                            <input id="login_pass" name="password" type="password" required maxlength="128">
+                            <button type="submit">Log in</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
