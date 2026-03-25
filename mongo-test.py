@@ -5,7 +5,9 @@ client = MongoClient(MONGODB_URL)
 
 db = client['search-vuln-world']
 collection = db['food']
+login = db['login']
 
+login.insert_one({"username": "admin", "password": "admin"})
 #collection.insert_one({"name": "Croissant", "price": 3.99})
 #collection.insert_one({"name": "Muffin", "price": 3.99})
 #collection.insert_one({"name": "Bagel", "price": 2.99})
