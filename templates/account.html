@@ -155,6 +155,52 @@
             border-top: 1px solid rgba(255,255,255,.15);
             margin: 0.5rem 0 1rem;
         }
+        .ctf-score {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: var(--muted);
+        }
+        .ctf-score strong {
+            color: var(--neon3);
+            font-size: 1.15rem;
+        }
+        .ctf-panel {
+            margin-top: 1.25rem;
+        }
+        .ctf-panel h2 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: rgba(248,251,255,.95);
+        }
+        .flag-challenge {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.65rem 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .flag-name {
+            font-weight: 600;
+            color: var(--neon2);
+            min-width: 4rem;
+        }
+        .flag-challenge input[type="text"] {
+            flex: 1 1 180px;
+            margin-bottom: 0;
+            min-width: 140px;
+        }
+        .flag-challenge button[type="submit"] {
+            width: auto;
+            margin-top: 0;
+            padding: 10px 18px;
+            flex: 0 0 auto;
+        }
+        .flag-solved {
+            color: var(--neon3);
+            font-weight: 600;
+            margin: 0.25rem 0 0;
+        }
     </style>
 </head>
 <body>
@@ -174,11 +220,28 @@
             <p class="sub">Signed in as a VulnWorld member.</p>
             <div class="panel">
                 <p class="profile-user">{{ session.username }}</p>
+                <p class="ctf-score">CTF score: <strong>{{ ctf_points }}</strong> pts</p>
                 <div class="profile-meta">
                     {% if member_since %}
                         <p><strong>Member since</strong> {{ member_since }}</p>
                     {% else %}
                         <p>Thanks for playing with us. Your session is active on this browser.</p>
+                    {% endif %}
+                </div>
+                <hr class="split">
+                <div class="ctf-panel">
+                    <h2>Submit a flag</h2>
+                    {% if test_flag_solved %}
+                        <p class="flag-solved">Test — solved</p>
+                    {% else %}
+                        <form method="post" action="{{ url_for('account_submit_flag') }}" autocomplete="off">
+                            <input type="hidden" name="flag_id" value="test">
+                            <div class="flag-challenge">
+                                <span class="flag-name">Test</span>
+                                <input type="text" name="flag" placeholder="Enter flag" maxlength="256" aria-label="Flag for Test">
+                                <button type="submit">Submit</button>
+                            </div>
+                        </form>
                     {% endif %}
                 </div>
                 <form class="logout-form" method="post" action="{{ url_for('account_logout') }}">
