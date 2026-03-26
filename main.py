@@ -54,7 +54,28 @@ CTF_FLAGS = {
         "points": 10,
         "secret": "VulnWorld{Test}",
     },
+    "admin_endpoint": {
+        "name": "Admin Endpoint",
+        "points": 10,
+        "secret": "VulnWorld{4dm1n_3ndp01nt_3262026}",
+    },
 }
+
+
+def _migrate_flag_points() -> None:
+    """Keep historical flag solve point values aligned with current config."""
+    for flag_id, meta in CTF_FLAGS.items():
+        try:
+            flag_solves.update_many(
+                {"flag_id": flag_id, "points": {"$ne": int(meta["points"])}},
+                {"$set": {"points": int(meta["points"])}},
+            )
+        except Exception:
+            # Avoid breaking app startup if DB is temporarily unavailable.
+            pass
+
+
+_migrate_flag_points()
 
 
 def _ctf_user_points(username: str) -> int:
@@ -83,6 +104,7 @@ def account():
     username = session.get("username")
     ctf_points = 0
     test_flag_solved = False
+    admin_endpoint_flag_solved = False
     if username:
         doc = login_collection.find_one({"username": username})
         if doc and doc.get("created_at"):
@@ -93,11 +115,13 @@ def account():
                 member_since = str(raw)
         ctf_points = _ctf_user_points(username)
         test_flag_solved = "test" in _ctf_solved_flag_ids(username)
+        admin_endpoint_flag_solved = "admin_endpoint" in _ctf_solved_flag_ids(username)
     return render_template(
         "account.html",
         member_since=member_since,
         ctf_points=ctf_points,
         test_flag_solved=test_flag_solved,
+        admin_endpoint_flag_solved=admin_endpoint_flag_solved,
     )
 
 
