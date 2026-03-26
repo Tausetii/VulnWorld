@@ -243,6 +243,18 @@
                             </div>
                         </form>
                     {% endif %}
+                    {% if admin_endpoint_flag_solved %}
+                        <p class="flag-solved">Admin Endpoint — solved</p>
+                    {% else %}
+                        <form method="post" action="{{ url_for('account_submit_flag') }}" autocomplete="off">
+                            <input type="hidden" name="flag_id" value="admin_endpoint">
+                            <div class="flag-challenge">
+                                <span class="flag-name">Admin Endpoint</span>
+                                <input type="text" name="flag" placeholder="Enter flag" maxlength="256" aria-label="Flag for Admin Endpoint">
+                                <button type="submit">Submit</button>
+                            </div>
+                        </form>
+                    {% endif %}
                 </div>
                 <form class="logout-form" method="post" action="{{ url_for('account_logout') }}">
                     <button type="submit">Log out</button>
