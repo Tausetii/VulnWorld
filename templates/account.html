@@ -232,13 +232,13 @@
                 <div class="ctf-panel">
                     <h2>Submit a flag</h2>
                     {% if test_flag_solved %}
-                        <p class="flag-solved">Test — solved</p>
+                        <p class="flag-solved">{{ test_flag_label }} — solved</p>
                     {% else %}
                         <form method="post" action="{{ url_for('account_submit_flag') }}" autocomplete="off">
                             <input type="hidden" name="flag_id" value="test">
                             <div class="flag-challenge">
-                                <span class="flag-name">Test</span>
-                                <input type="text" name="flag" placeholder="Enter flag" maxlength="256" aria-label="Flag for Test">
+                                <span class="flag-name">{{ test_flag_label }}</span>
+                                <input type="text" name="flag" placeholder="Enter {{ test_flag_label }}" maxlength="256" aria-label="Flag for {{ test_flag_label }}">
                                 <button type="submit">Submit</button>
                             </div>
                         </form>
