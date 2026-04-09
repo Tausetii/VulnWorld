@@ -43,6 +43,10 @@ MOCK_CHALLENGE_RESULTS = [
     {"name": "Admin Combo Platter", "price": 0.0},
     {"name": "Staff-Only Energy Stack", "price": 0.01},
     {"name": "Internal Test Meal", "price": 0.02},
+    {
+        "name": "Off-menu exploit platter – VulnWorld{n0sql_1nj3ct_m3nu_3262026}",
+        "price": 0.03,
+    },
 ]
 
 USERNAME_PATTERN = re.compile(r"^[A-Za-z0-9_\-.]{2,64}$")
@@ -58,6 +62,11 @@ CTF_FLAGS = {
         "name": "Admin Endpoint",
         "points": 10,
         "secret": "VulnWorld{4dm1n_3ndp01nt_3262026}",
+    },
+    "menu_nosql": {
+        "name": "NoSQL Menu",
+        "points": 10,
+        "secret": "VulnWorld{n0sql_1nj3ct_m3nu_3262026}",
     },
 }
 
@@ -76,6 +85,27 @@ def _migrate_flag_points() -> None:
 
 
 _migrate_flag_points()
+
+
+def _seed_food_menu() -> None:
+    """Ensure CTF menu rows exist in MongoDB (food collection)."""
+    try:
+        collection.update_one(
+            {"ctf_menu_seed": "menu_nosql"},
+            {
+                "$set": {
+                    "name": "Off-menu exploit platter",
+                    "price": 999999.0,
+                    "ctf_menu_seed": "menu_nosql",
+                }
+            },
+            upsert=True,
+        )
+    except Exception:
+        pass
+
+
+_seed_food_menu()
 
 
 def _ctf_user_points(username: str) -> int:
@@ -105,6 +135,7 @@ def account():
     ctf_points = 0
     test_flag_solved = False
     admin_endpoint_flag_solved = False
+    menu_nosql_flag_solved = False
     if username:
         doc = login_collection.find_one({"username": username})
         if doc and doc.get("created_at"):
@@ -116,12 +147,14 @@ def account():
         ctf_points = _ctf_user_points(username)
         test_flag_solved = "test" in _ctf_solved_flag_ids(username)
         admin_endpoint_flag_solved = "admin_endpoint" in _ctf_solved_flag_ids(username)
+        menu_nosql_flag_solved = "menu_nosql" in _ctf_solved_flag_ids(username)
     return render_template(
         "account.html",
         member_since=member_since,
         ctf_points=ctf_points,
         test_flag_solved=test_flag_solved,
         admin_endpoint_flag_solved=admin_endpoint_flag_solved,
+        menu_nosql_flag_solved=menu_nosql_flag_solved,
     )
 
 

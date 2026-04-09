@@ -7,6 +7,13 @@ db = client['search-vuln-world']
 collection = db['food']
 login = db['login']
 
+# CTF: off-menu row (same seed as main.py _seed_food_menu); flag is redeemed on Account, not stored here.
+# collection.update_one(
+#     {"ctf_menu_seed": "menu_nosql"},
+#     {"$set": {"name": "Off-menu exploit platter", "price": 999999.0, "ctf_menu_seed": "menu_nosql"}},
+#     upsert=True,
+# )
+
 login.insert_one({"username": "admin", "password": "admin"})
 #collection.insert_one({"name": "Croissant", "price": 3.99})
 #collection.insert_one({"name": "Muffin", "price": 3.99})
