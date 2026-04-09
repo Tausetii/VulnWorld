@@ -54,7 +54,7 @@ USERNAME_PATTERN = re.compile(r"^[A-Za-z0-9_\-.]{2,64}$")
 # CTF: flag_id -> display name, points, and secret string (server-side only).
 CTF_FLAGS = {
     "test": {
-        "name": "Test",
+        "name": "VulnWorld{Test}",
         "points": 10,
         "secret": "VulnWorld{Test}",
     },
@@ -152,6 +152,7 @@ def account():
         "account.html",
         member_since=member_since,
         ctf_points=ctf_points,
+        test_flag_label=CTF_FLAGS["test"]["name"],
         test_flag_solved=test_flag_solved,
         admin_endpoint_flag_solved=admin_endpoint_flag_solved,
         menu_nosql_flag_solved=menu_nosql_flag_solved,
