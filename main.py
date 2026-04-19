@@ -68,6 +68,11 @@ CTF_FLAGS = {
         "points": 10,
         "secret": "VulnWorld{n0sql_1nj3ct_m3nu_3262026}",
     },
+    "account_source": {
+        "name": "Account page source",
+        "points": 10,
+        "secret": "VulnWorld{v13w_s0urc3_4cc0unt_3262026}",
+    },
 }
 
 
@@ -136,6 +141,7 @@ def account():
     test_flag_solved = False
     admin_endpoint_flag_solved = False
     menu_nosql_flag_solved = False
+    account_source_flag_solved = False
     if username:
         doc = login_collection.find_one({"username": username})
         if doc and doc.get("created_at"):
@@ -148,6 +154,7 @@ def account():
         test_flag_solved = "test" in _ctf_solved_flag_ids(username)
         admin_endpoint_flag_solved = "admin_endpoint" in _ctf_solved_flag_ids(username)
         menu_nosql_flag_solved = "menu_nosql" in _ctf_solved_flag_ids(username)
+        account_source_flag_solved = "account_source" in _ctf_solved_flag_ids(username)
     return render_template(
         "account.html",
         member_since=member_since,
@@ -156,6 +163,9 @@ def account():
         test_flag_solved=test_flag_solved,
         admin_endpoint_flag_solved=admin_endpoint_flag_solved,
         menu_nosql_flag_solved=menu_nosql_flag_solved,
+        account_source_flag_label=CTF_FLAGS["account_source"]["name"],
+        account_source_flag_secret=CTF_FLAGS["account_source"]["secret"],
+        account_source_flag_solved=account_source_flag_solved,
     )
 
 
