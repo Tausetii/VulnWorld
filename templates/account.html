@@ -280,6 +280,18 @@
                             </div>
                         </form>
                     {% endif %}
+                    {% if instagram_osint_flag_solved %}
+                        <p class="flag-solved">{{ instagram_osint_flag_label }} — solved</p>
+                    {% else %}
+                        <form method="post" action="{{ url_for('account_submit_flag') }}" autocomplete="off">
+                            <input type="hidden" name="flag_id" value="instagram_osint">
+                            <div class="flag-challenge">
+                                <span class="flag-name">{{ instagram_osint_flag_label }}</span>
+                                <input type="text" name="flag" placeholder="Enter flag from social OSINT" maxlength="256" aria-label="Flag for {{ instagram_osint_flag_label }}">
+                                <button type="submit">Submit</button>
+                            </div>
+                        </form>
+                    {% endif %}
                 </div>
                 <form class="logout-form" method="post" action="{{ url_for('account_logout') }}">
                     <button type="submit">Log out</button>
