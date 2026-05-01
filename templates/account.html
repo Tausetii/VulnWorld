@@ -213,6 +213,30 @@
         .solved-list li {
             margin-bottom: 0.2rem;
         }
+        .admin-flag-panel {
+            margin-top: 1.25rem;
+            border: 1px solid rgba(124,255,107,.35);
+            background: rgba(124,255,107,.08);
+            border-radius: 14px;
+            padding: 1rem 1rem 0.9rem;
+        }
+        .admin-flag-panel h2 {
+            margin-bottom: 0.5rem;
+        }
+        .admin-flag-panel p {
+            color: rgba(248,251,255,.9);
+            line-height: 1.6;
+        }
+        .admin-flag-code {
+            display: inline-block;
+            margin-top: 0.5rem;
+            padding: 0.45rem 0.65rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,.3);
+            background: rgba(0,0,0,.25);
+            color: var(--neon3);
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -241,26 +265,35 @@
                         <p>Thanks for playing with us. Your session is active on this browser.</p>
                     {% endif %}
                 </div>
-                <hr class="split">
-                <div class="ctf-panel">
-                    <h2>Submit a flag (all challenges)</h2>
-                    <form method="post" action="{{ url_for('account_submit_flag') }}" autocomplete="off">
-                        <div class="flag-challenge central">
-                            <span class="flag-name">Flag</span>
-                            <input type="text" name="flag" placeholder="Paste any VulnWorld{...} flag here" maxlength="256" aria-label="Centralized flag input">
-                            <button type="submit">Submit</button>
-                        </div>
-                    </form>
+                {% if is_admin_account %}
+                    <hr class="split">
+                    <div class="admin-flag-panel">
+                        <h2>Admin access confirmed</h2>
+                        <p>Congrats, you logged in as the admin account. Your regular flag panel is hidden on this profile and replaced with this admin-only reward.</p>
+                        <p class="admin-flag-code">{{ admin_account_reward_flag }}</p>
+                    </div>
+                {% else %}
+                    <hr class="split">
+                    <div class="ctf-panel">
+                        <h2>Submit a flag (all challenges)</h2>
+                        <form method="post" action="{{ url_for('account_submit_flag') }}" autocomplete="off">
+                            <div class="flag-challenge central">
+                                <span class="flag-name">Flag</span>
+                                <input type="text" name="flag" placeholder="Paste any VulnWorld{...} flag here" maxlength="256" aria-label="Centralized flag input">
+                                <button type="submit">Submit</button>
+                            </div>
+                        </form>
 
-                    <p class="flag-solved" style="margin-top: 0.75rem;">Solved challenges:</p>
-                    <ul class="solved-list">
-                        <li>{{ test_flag_label }} {% if test_flag_solved %}- solved{% else %}- unsolved{% endif %}</li>
-                        <li>Admin Endpoint {% if admin_endpoint_flag_solved %}- solved{% else %}- unsolved{% endif %}</li>
-                        <li>NoSQL Menu {% if menu_nosql_flag_solved %}- solved{% else %}- unsolved{% endif %}</li>
-                        <li>{{ account_source_flag_label }} {% if account_source_flag_solved %}- solved{% else %}- unsolved{% endif %}</li>
-                        <li>{{ instagram_osint_flag_label }} {% if instagram_osint_flag_solved %}- solved{% else %}- unsolved{% endif %}</li>
-                    </ul>
-                </div>
+                        <p class="flag-solved" style="margin-top: 0.75rem;">Solved challenges:</p>
+                        <ul class="solved-list">
+                            <li>{{ test_flag_label }} {% if test_flag_solved %}- solved{% else %}- unsolved{% endif %}</li>
+                            <li>Admin Endpoint {% if admin_endpoint_flag_solved %}- solved{% else %}- unsolved{% endif %}</li>
+                            <li>NoSQL Menu {% if menu_nosql_flag_solved %}- solved{% else %}- unsolved{% endif %}</li>
+                            <li>{{ account_source_flag_label }} {% if account_source_flag_solved %}- solved{% else %}- unsolved{% endif %}</li>
+                            <li>{{ instagram_osint_flag_label }} {% if instagram_osint_flag_solved %}- solved{% else %}- unsolved{% endif %}</li>
+                        </ul>
+                    </div>
+                {% endif %}
                 <form class="logout-form" method="post" action="{{ url_for('account_logout') }}">
                     <button type="submit">Log out</button>
                 </form>
