@@ -80,6 +80,9 @@ CTF_FLAGS = {
     },
 }
 
+ADMIN_ACCOUNT_USERNAME = "admin"
+ADMIN_ACCOUNT_REWARD_FLAG = "VulnWorld{4dm1n_4cc0unt_d4shb04rd_3262026}"
+
 
 def _migrate_flag_points() -> None:
     """Keep historical flag solve point values aligned with current config."""
@@ -148,6 +151,7 @@ def account():
     menu_nosql_flag_solved = False
     account_source_flag_solved = False
     instagram_osint_flag_solved = False
+    is_admin_account = False
     if username:
         doc = login_collection.find_one({"username": username})
         if doc and doc.get("created_at"):
@@ -162,6 +166,7 @@ def account():
         menu_nosql_flag_solved = "menu_nosql" in _ctf_solved_flag_ids(username)
         account_source_flag_solved = "account_source" in _ctf_solved_flag_ids(username)
         instagram_osint_flag_solved = "instagram_osint" in _ctf_solved_flag_ids(username)
+        is_admin_account = username.lower() == ADMIN_ACCOUNT_USERNAME
     return render_template(
         "account.html",
         member_since=member_since,
@@ -175,6 +180,8 @@ def account():
         account_source_flag_solved=account_source_flag_solved,
         instagram_osint_flag_label=CTF_FLAGS["instagram_osint"]["name"],
         instagram_osint_flag_solved=instagram_osint_flag_solved,
+        is_admin_account=is_admin_account,
+        admin_account_reward_flag=ADMIN_ACCOUNT_REWARD_FLAG,
     )
 
 
