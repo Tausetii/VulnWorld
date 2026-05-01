@@ -240,38 +240,44 @@ def account_submit_flag():
         flash("Log in to submit flags.", "error")
         return redirect(url_for("account"))
 
-    flag_id = (request.form.get("flag_id") or "").strip()
     submitted = (request.form.get("flag") or "").strip()
-
-    meta = CTF_FLAGS.get(flag_id)
-    if not meta:
-        flash("Unknown flag challenge.", "error")
+    if not submitted:
+        flash("Enter a flag before submitting.", "error")
         return redirect(url_for("account"))
 
-    if flag_solves.find_one({"username": username, "flag_id": flag_id}):
-        flash(f'You already solved "{meta["name"]}".', "error")
-        return redirect(url_for("account"))
+    solved_ids = _ctf_solved_flag_ids(username)
+    matched_flag_id = None
+    matched_meta = None
+    for flag_id, meta in CTF_FLAGS.items():
+        if submitted == meta["secret"]:
+            matched_flag_id = flag_id
+            matched_meta = meta
+            break
 
-    if submitted != meta["secret"]:
+    if not matched_flag_id or not matched_meta:
         flash("Incorrect flag. Keep hunting!", "error")
         return redirect(url_for("account"))
 
-    points = int(meta["points"])
+    if matched_flag_id in solved_ids:
+        flash(f'You already solved "{matched_meta["name"]}".', "error")
+        return redirect(url_for("account"))
+
+    points = int(matched_meta["points"])
     try:
         flag_solves.insert_one(
             {
                 "username": username,
-                "flag_id": flag_id,
-                "flag_name": meta["name"],
+                "flag_id": matched_flag_id,
+                "flag_name": matched_meta["name"],
                 "points": points,
                 "solved_at": datetime.now(timezone.utc),
             }
         )
     except DuplicateKeyError:
-        flash(f'You already solved "{meta["name"]}".', "error")
+        flash(f'You already solved "{matched_meta["name"]}".', "error")
         return redirect(url_for("account"))
 
-    flash(f'Correct! "{meta["name"]}" solved for +{points} points.', "success")
+    flash(f'Correct! "{matched_meta["name"]}" solved for +{points} points.', "success")
     return redirect(url_for("account"))
 
 # data = [{
