@@ -78,10 +78,15 @@ CTF_FLAGS = {
         "points": 10,
         "secret": "VulnWorld{1nst4gr4m_0s1nt_3262026}",
     },
+    "admin_account_reward": {
+        "name": "Admin Account Reward",
+        "points": 20,
+        "secret": "VulnWorld{4dm1n_4cc0unt_d4shb04rd_3262026}",
+    },
 }
 
 ADMIN_ACCOUNT_USERNAME = "admin"
-ADMIN_ACCOUNT_REWARD_FLAG = "VulnWorld{4dm1n_4cc0unt_d4shb04rd_3262026}"
+ADMIN_ACCOUNT_REWARD_FLAG = CTF_FLAGS["admin_account_reward"]["secret"]
 
 
 def _migrate_flag_points() -> None:
@@ -151,6 +156,7 @@ def account():
     menu_nosql_flag_solved = False
     account_source_flag_solved = False
     instagram_osint_flag_solved = False
+    admin_account_reward_flag_solved = False
     is_admin_account = False
     if username:
         doc = login_collection.find_one({"username": username})
@@ -166,6 +172,7 @@ def account():
         menu_nosql_flag_solved = "menu_nosql" in _ctf_solved_flag_ids(username)
         account_source_flag_solved = "account_source" in _ctf_solved_flag_ids(username)
         instagram_osint_flag_solved = "instagram_osint" in _ctf_solved_flag_ids(username)
+        admin_account_reward_flag_solved = "admin_account_reward" in _ctf_solved_flag_ids(username)
         is_admin_account = username.lower() == ADMIN_ACCOUNT_USERNAME
     return render_template(
         "account.html",
@@ -180,6 +187,8 @@ def account():
         account_source_flag_solved=account_source_flag_solved,
         instagram_osint_flag_label=CTF_FLAGS["instagram_osint"]["name"],
         instagram_osint_flag_solved=instagram_osint_flag_solved,
+        admin_account_reward_flag_label=CTF_FLAGS["admin_account_reward"]["name"],
+        admin_account_reward_flag_solved=admin_account_reward_flag_solved,
         is_admin_account=is_admin_account,
         admin_account_reward_flag=ADMIN_ACCOUNT_REWARD_FLAG,
     )
