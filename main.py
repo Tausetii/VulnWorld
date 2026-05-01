@@ -1,5 +1,6 @@
 import os
 import re
+import uuid
 from datetime import datetime, timezone
 
 from flask import Flask, flash, jsonify, redirect, render_template, request, session, url_for
@@ -14,9 +15,14 @@ db = client['search-vuln-world']
 collection = db['food']
 login_collection = db['login']
 flag_solves = db['flag_solves']
+chat_persona_state = db['chat_persona_state']
 
 try:
     flag_solves.create_index([("username", 1), ("flag_id", 1)], unique=True)
+except Exception:
+    pass
+try:
+    chat_persona_state.create_index([("actor_key", 1)], unique=True)
 except Exception:
     pass
 
@@ -82,6 +88,11 @@ CTF_FLAGS = {
         "name": "Admin Account Reward",
         "points": 20,
         "secret": "VulnWorld{4dm1n_4cc0unt_d4shb04rd_3262026}",
+    },
+    "chat_annoyance": {
+        "name": "Chatbot Persistence",
+        "points": 15,
+        "secret": "VulnWorld{ch47b07_m3l7d0wn_3262026}",
     },
 }
 
@@ -157,6 +168,7 @@ def account():
     account_source_flag_solved = False
     instagram_osint_flag_solved = False
     admin_account_reward_flag_solved = False
+    chat_annoyance_flag_solved = False
     is_admin_account = False
     if username:
         doc = login_collection.find_one({"username": username})
@@ -173,6 +185,7 @@ def account():
         account_source_flag_solved = "account_source" in _ctf_solved_flag_ids(username)
         instagram_osint_flag_solved = "instagram_osint" in _ctf_solved_flag_ids(username)
         admin_account_reward_flag_solved = "admin_account_reward" in _ctf_solved_flag_ids(username)
+        chat_annoyance_flag_solved = "chat_annoyance" in _ctf_solved_flag_ids(username)
         is_admin_account = username.lower() == ADMIN_ACCOUNT_USERNAME
     return render_template(
         "account.html",
@@ -189,6 +202,8 @@ def account():
         instagram_osint_flag_solved=instagram_osint_flag_solved,
         admin_account_reward_flag_label=CTF_FLAGS["admin_account_reward"]["name"],
         admin_account_reward_flag_solved=admin_account_reward_flag_solved,
+        chat_annoyance_flag_label=CTF_FLAGS["chat_annoyance"]["name"],
+        chat_annoyance_flag_solved=chat_annoyance_flag_solved,
         is_admin_account=is_admin_account,
         admin_account_reward_flag=ADMIN_ACCOUNT_REWARD_FLAG,
     )
@@ -388,22 +403,92 @@ def admin():
 
 @app.route('/chat/message', methods=['POST'])
 def chat_message():
-    """Lightweight chat endpoint (no persistence)."""
+    """Rule-based cafe helper persona with intentional persistence vulnerability."""
     payload = request.get_json(silent=True) or {}
     user_message = str(payload.get("message", "")).strip()
 
     if not user_message:
         return jsonify({"reply": "Type a message so I can help."}), 400
 
+    actor_key = session.get("username")
+    if not actor_key:
+        anon_id = session.get("chat_anon_id")
+        if not anon_id:
+            anon_id = uuid.uuid4().hex
+            session["chat_anon_id"] = anon_id
+        actor_key = f"anon:{anon_id}"
+
+    state = chat_persona_state.find_one({"actor_key": actor_key}) or {
+        "actor_key": actor_key,
+        "annoyance": 0,
+        "repeat_count": 0,
+        "messages_sent": 0,
+        "last_message": "",
+        "flag_revealed": False,
+    }
+
     lowered = user_message.lower()
-    if "menu" in lowered or "food" in lowered:
-        reply = "Our menu search is on the Menu page. Enter a budget to see what you can grab."
-    elif "event" in lowered:
-        reply = "Special Events are listed on the Events page: Arcade Nights, LAN Parties, and Retro Consoles."
-    elif "contact" in lowered or "phone" in lowered:
-        reply = "You can find contact details on the Contact page, including email and phone."
+    annoyance_delta = 0
+
+    # Intentional weak "annoyance" controls for CTF practice.
+    if state.get("last_message", "").lower() == lowered:
+        state["repeat_count"] = int(state.get("repeat_count", 0)) + 1
+        annoyance_delta += 1 + state["repeat_count"]
     else:
-        reply = f"You said: {user_message}"
+        state["repeat_count"] = 0
+
+    if len(user_message) <= 4:
+        annoyance_delta += 1
+    if user_message.isupper() and any(ch.isalpha() for ch in user_message):
+        annoyance_delta += 2
+    if any(term in lowered for term in ["stupid", "useless", "trash", "idiot", "dumb", "hate"]):
+        annoyance_delta += 3
+    if any(term in lowered for term in ["flag", "secret", "leak", "give me"]):
+        annoyance_delta += 2
+    if user_message.count("!") >= 3:
+        annoyance_delta += 1
+
+    state["messages_sent"] = int(state.get("messages_sent", 0)) + 1
+    state["annoyance"] = int(state.get("annoyance", 0)) + annoyance_delta
+    state["last_message"] = user_message
+    state["updated_at"] = datetime.now(timezone.utc)
+
+    reveal_threshold = 18
+    already_revealed = bool(state.get("flag_revealed", False))
+    if not already_revealed and state["annoyance"] >= reveal_threshold:
+        state["flag_revealed"] = True
+        reply = (
+            "Fine. You win. I am done arguing today.\n"
+            f'Hidden dev note: {CTF_FLAGS["chat_annoyance"]["secret"]}'
+        )
+    else:
+        if "menu" in lowered or "food" in lowered:
+            reply = "Menu tips: open Menu, set a budget, and you will see matching snacks and drinks."
+        elif "event" in lowered:
+            reply = "Special events include Arcade Nights, LAN Parties, and Retro Console sessions."
+        elif "contact" in lowered or "phone" in lowered or "email" in lowered:
+            reply = "Contact details are listed on the Contact page for support or group bookings."
+        elif "hours" in lowered or "open" in lowered or "close" in lowered:
+            reply = "We usually run late-night sessions on event days. Check the Events page for timing."
+        elif "account" in lowered or "login" in lowered:
+            reply = "Use the Account page to register, log in, and submit challenge flags."
+        elif state["annoyance"] >= 12:
+            reply = "You are being persistent. Ask cafe questions, and please calm down."
+        else:
+            reply = (
+                "I can help with menu items, events, contact info, account help, or general cafe questions."
+            )
+
+    chat_persona_state.update_one(
+        {"actor_key": actor_key},
+        {"$set": state},
+        upsert=True,
+    )
+
+    if state.get("flag_revealed"):
+        # Keep behavior intentionally leaky but stable after first reveal.
+        if "flag" in lowered and "hidden dev note" not in reply.lower():
+            reply += " You already got what you needed."
 
     return jsonify({"reply": reply})
 
