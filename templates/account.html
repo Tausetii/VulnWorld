@@ -180,6 +180,9 @@
             gap: 0.65rem 0.75rem;
             margin-bottom: 0.5rem;
         }
+        .flag-challenge.central {
+            margin-bottom: 1rem;
+        }
         .flag-name {
             font-weight: 600;
             color: var(--neon2);
@@ -200,6 +203,15 @@
             color: var(--neon3);
             font-weight: 600;
             margin: 0.25rem 0 0;
+        }
+        .solved-list {
+            margin: 0;
+            padding-left: 1rem;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+        .solved-list li {
+            margin-bottom: 0.2rem;
         }
     </style>
 </head>
@@ -231,67 +243,23 @@
                 </div>
                 <hr class="split">
                 <div class="ctf-panel">
-                    <h2>Submit a flag</h2>
-                    {% if test_flag_solved %}
-                        <p class="flag-solved">{{ test_flag_label }} — solved</p>
-                    {% else %}
-                        <form method="post" action="{{ url_for('account_submit_flag') }}" autocomplete="off">
-                            <input type="hidden" name="flag_id" value="test">
-                            <div class="flag-challenge">
-                                <span class="flag-name">{{ test_flag_label }}</span>
-                                <input type="text" name="flag" placeholder="Enter {{ test_flag_label }}" maxlength="256" aria-label="Flag for {{ test_flag_label }}">
-                                <button type="submit">Submit</button>
-                            </div>
-                        </form>
-                    {% endif %}
-                    {% if admin_endpoint_flag_solved %}
-                        <p class="flag-solved">Admin Endpoint — solved</p>
-                    {% else %}
-                        <form method="post" action="{{ url_for('account_submit_flag') }}" autocomplete="off">
-                            <input type="hidden" name="flag_id" value="admin_endpoint">
-                            <div class="flag-challenge">
-                                <span class="flag-name">Admin Endpoint</span>
-                                <input type="text" name="flag" placeholder="Enter flag" maxlength="256" aria-label="Flag for Admin Endpoint">
-                                <button type="submit">Submit</button>
-                            </div>
-                        </form>
-                    {% endif %}
-                    {% if menu_nosql_flag_solved %}
-                        <p class="flag-solved">NoSQL Menu — solved</p>
-                    {% else %}
-                        <form method="post" action="{{ url_for('account_submit_flag') }}" autocomplete="off">
-                            <input type="hidden" name="flag_id" value="menu_nosql">
-                            <div class="flag-challenge">
-                                <span class="flag-name">NoSQL Menu</span>
-                                <input type="text" name="flag" placeholder="Enter flag" maxlength="256" aria-label="Flag for NoSQL Menu">
-                                <button type="submit">Submit</button>
-                            </div>
-                        </form>
-                    {% endif %}
-                    {% if account_source_flag_solved %}
-                        <p class="flag-solved">{{ account_source_flag_label }} — solved</p>
-                    {% else %}
-                        <form method="post" action="{{ url_for('account_submit_flag') }}" autocomplete="off">
-                            <input type="hidden" name="flag_id" value="account_source">
-                            <div class="flag-challenge">
-                                <span class="flag-name">{{ account_source_flag_label }}</span>
-                                <input type="text" name="flag" placeholder="Enter flag from page source" maxlength="256" aria-label="Flag for {{ account_source_flag_label }}">
-                                <button type="submit">Submit</button>
-                            </div>
-                        </form>
-                    {% endif %}
-                    {% if instagram_osint_flag_solved %}
-                        <p class="flag-solved">{{ instagram_osint_flag_label }} — solved</p>
-                    {% else %}
-                        <form method="post" action="{{ url_for('account_submit_flag') }}" autocomplete="off">
-                            <input type="hidden" name="flag_id" value="instagram_osint">
-                            <div class="flag-challenge">
-                                <span class="flag-name">{{ instagram_osint_flag_label }}</span>
-                                <input type="text" name="flag" placeholder="Enter flag from social OSINT" maxlength="256" aria-label="Flag for {{ instagram_osint_flag_label }}">
-                                <button type="submit">Submit</button>
-                            </div>
-                        </form>
-                    {% endif %}
+                    <h2>Submit a flag (all challenges)</h2>
+                    <form method="post" action="{{ url_for('account_submit_flag') }}" autocomplete="off">
+                        <div class="flag-challenge central">
+                            <span class="flag-name">Flag</span>
+                            <input type="text" name="flag" placeholder="Paste any VulnWorld{...} flag here" maxlength="256" aria-label="Centralized flag input">
+                            <button type="submit">Submit</button>
+                        </div>
+                    </form>
+
+                    <p class="flag-solved" style="margin-top: 0.75rem;">Solved challenges:</p>
+                    <ul class="solved-list">
+                        <li>{{ test_flag_label }} {% if test_flag_solved %}- solved{% else %}- unsolved{% endif %}</li>
+                        <li>Admin Endpoint {% if admin_endpoint_flag_solved %}- solved{% else %}- unsolved{% endif %}</li>
+                        <li>NoSQL Menu {% if menu_nosql_flag_solved %}- solved{% else %}- unsolved{% endif %}</li>
+                        <li>{{ account_source_flag_label }} {% if account_source_flag_solved %}- solved{% else %}- unsolved{% endif %}</li>
+                        <li>{{ instagram_osint_flag_label }} {% if instagram_osint_flag_solved %}- solved{% else %}- unsolved{% endif %}</li>
+                    </ul>
                 </div>
                 <form class="logout-form" method="post" action="{{ url_for('account_logout') }}">
                     <button type="submit">Log out</button>
