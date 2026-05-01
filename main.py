@@ -486,9 +486,9 @@ def chat_message():
     )
 
     if state.get("flag_revealed"):
-        # Keep behavior intentionally leaky but stable after first reveal.
-        if "flag" in lowered and "hidden dev note" not in reply.lower():
-            reply += " You already got what you needed."
+        # Once unlocked, let users retrieve it again if they forgot.
+        if any(term in lowered for term in ["flag", "secret", "give me", "what was it", "repeat"]):
+            reply = f'Hidden dev note: {CTF_FLAGS["chat_annoyance"]["secret"]}'
 
     return jsonify({"reply": reply})
 
