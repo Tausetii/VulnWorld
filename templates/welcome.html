@@ -204,6 +204,172 @@
             color: var(--text);
             text-shadow: 0 0 22px rgba(0,229,255,.3);
         }
+        .section-block {
+            width: 100%;
+            padding: 0 var(--page-pad) 2.5rem;
+        }
+        .section-inner {
+            max-width: var(--content-max);
+            margin: 0 auto;
+        }
+        .section-intro {
+            color: var(--muted);
+            font-size: 1.02rem;
+            line-height: 1.65;
+            max-width: 62ch;
+            margin-bottom: 1.75rem;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.15rem;
+        }
+        .feature-card {
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: 16px;
+            padding: 1.35rem 1.25rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 14px 40px rgba(0,0,0,.28);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 18px 48px rgba(0,0,0,.38), 0 0 24px rgba(0,229,255,.12);
+        }
+        .feature-card h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        .feature-card p {
+            color: var(--muted);
+            font-size: 0.97rem;
+            line-height: 1.6;
+        }
+        .feature-icon {
+            display: inline-flex;
+            width: 42px;
+            height: 42px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            margin-bottom: 0.85rem;
+            font-size: 1.35rem;
+            background: linear-gradient(135deg, rgba(255,61,242,.25), rgba(0,229,255,.2));
+            border: 1px solid rgba(255,255,255,.22);
+        }
+        .visit-panel {
+            margin-top: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem;
+            align-items: stretch;
+        }
+        .visit-box {
+            background: rgba(0,0,0,.22);
+            border: 1px solid rgba(255,255,255,.18);
+            border-radius: 16px;
+            padding: 1.35rem 1.4rem;
+        }
+        .visit-box h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 0.65rem;
+            color: var(--text);
+        }
+        .visit-box dl {
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--muted);
+            line-height: 1.75;
+        }
+        .visit-box dt {
+            float: left;
+            clear: left;
+            width: 8.5rem;
+            color: rgba(248,251,255,.88);
+            font-weight: 500;
+        }
+        .visit-box dd {
+            margin: 0 0 0.35rem 8.5rem;
+        }
+        .visit-box ul {
+            margin: 0;
+            padding-left: 1.15rem;
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.75;
+        }
+        .cta-row {
+            margin-top: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1rem 1.5rem;
+            padding: 1.25rem 1.5rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,.2);
+            background: linear-gradient(120deg, rgba(255,61,242,.12), rgba(0,229,255,.1));
+        }
+        .cta-row p {
+            flex: 1 1 220px;
+            margin: 0;
+            color: rgba(248,251,255,.9);
+            font-size: 1rem;
+            line-height: 1.55;
+        }
+        .cta-row a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 22px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.98rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,.35);
+            background: rgba(255,255,255,.14);
+            color: var(--text);
+            white-space: nowrap;
+            transition: transform 0.15s ease, filter 0.15s ease;
+        }
+        .cta-row a:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.08);
+        }
+        .site-footer {
+            width: 100%;
+            margin-top: auto;
+            padding: 2rem var(--page-pad) 2.25rem;
+            border-top: 1px solid rgba(255,255,255,.12);
+            background: linear-gradient(0deg, rgba(0,0,0,.25), transparent);
+        }
+        .footer-inner {
+            max-width: var(--content-max);
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem 2rem;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.92rem;
+            color: var(--muted);
+        }
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem 1.25rem;
+        }
+        .footer-links a {
+            color: rgba(248,251,255,.85);
+            text-decoration: none;
+        }
+        .footer-links a:hover {
+            text-shadow: 0 0 12px rgba(0,229,255,.4);
+            color: var(--text);
+        }
     </style>
 </head>
 <body>
@@ -242,5 +408,74 @@
             </div>
         </div>
     </section>
+
+    <section class="section-block" aria-labelledby="experience-heading">
+        <div class="section-inner">
+            <div class="accent-bar" aria-hidden="true"></div>
+            <h2 id="experience-heading" class="section-title">The full arcade night</h2>
+            <p class="section-intro">Whether you’re here for a speedrun, a birthday squad, or fries between rounds, we’ve wired the floor for fun: classic cabinets, competitive PCs, and a kitchen that keeps the combo streak alive.</p>
+            <div class="feature-grid">
+                <article class="feature-card">
+                    <div class="feature-icon" aria-hidden="true">🕹️</div>
+                    <h3>Floor &amp; cabinets</h3>
+                    <p>Pinball, rhythm games, lightgun classics, and a rotating “featured week” row so there’s always something new next to the staples.</p>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-icon" aria-hidden="true">🖥️</div>
+                    <h3>PC bays &amp; LAN</h3>
+                    <p>Rented stations with mechanical keyboards, comfy chairs, and low-latency switches—perfect for team nights or solo ranked queues.</p>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-icon" aria-hidden="true">🍔</div>
+                    <h3>Food &amp; drinks</h3>
+                    <p>Burgers, loaded fries, vegan bowls, and fountain drinks. Order from your station or the counter—we’ll call your tag when it’s up.</p>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-icon" aria-hidden="true">🎉</div>
+                    <h3>Events &amp; tourneys</h3>
+                    <p>Weekend brackets, cosplay meetups, and retro high-score nights. Check <a href="/events" style="color:#9aebff;">Special Events</a> for what’s on this month.</p>
+                </article>
+            </div>
+
+            <div class="visit-panel">
+                <div class="visit-box">
+                    <h3>Hours</h3>
+                    <dl>
+                        <dt>Mon–Thu</dt>
+                        <dd>4:00 p.m. – 11:00 p.m.</dd>
+                        <dt>Fri–Sat</dt>
+                        <dd>12:00 p.m. – 1:00 a.m.</dd>
+                        <dt>Sun</dt>
+                        <dd>12:00 p.m. – 10:00 p.m.</dd>
+                    </dl>
+                </div>
+                <div class="visit-box">
+                    <h3>Quick facts</h3>
+                    <ul>
+                        <li>All ages welcome; after 9 p.m. we recommend 13+ unless with a guardian.</li>
+                        <li>Wristband entry includes floor access; PC bays are hourly add-ons.</li>
+                        <li>Free Wi‑Fi for guests—password at the front desk.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="cta-row">
+                <p>Planning a party or a ten-person LAN? We hold tables and bays with a quick heads-up.</p>
+                <a href="/contact">Reserve or ask a question</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <span>VulnWorld Gaming Cafe — Cyber City</span>
+            <div class="footer-links">
+                <a href="/menu">Menu</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+                <a href="/events">Events</a>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
