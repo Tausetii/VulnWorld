@@ -15,19 +15,21 @@
             --neon1:#ff3df2;
             --neon2:#00e5ff;
             --neon3:#7CFF6B;
+            --page-pad: clamp(1rem, 4vw, 2.5rem);
+            --content-max: min(1040px, 100%);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
         body {
             color: var(--text);
             min-height: 100vh;
-            padding: 2rem 1.5rem;
+            padding: 2rem var(--page-pad) 3rem;
             background:
                 radial-gradient(900px 420px at 15% 12%, rgba(255,61,242,.30), transparent 60%),
                 radial-gradient(820px 460px at 85% 22%, rgba(0,229,255,.26), transparent 60%),
                 radial-gradient(700px 520px at 55% 90%, rgba(124,255,107,.16), transparent 62%),
                 linear-gradient(160deg, var(--bg1), var(--bg2));
         }
-        .wrap{ max-width: 860px; margin: 0 auto; }
+        .wrap{ max-width: var(--content-max); margin: 0 auto; }
         .nav { margin-bottom: 1.5rem; }
         .nav a { color: var(--muted); text-decoration: none; }
         .nav a:hover { color: var(--text); text-shadow: 0 0 12px rgba(0,229,255,.35); }
@@ -35,22 +37,186 @@
             background: var(--card);
             border: 1px solid var(--stroke);
             border-radius: 18px;
-            padding: 1.5rem;
+            padding: 1.6rem 1.65rem;
             backdrop-filter: blur(10px);
             box-shadow: 0 18px 55px rgba(0,0,0,.35);
+            margin-bottom: 1.35rem;
         }
-        h1 { font-size: 1.9rem; font-weight: 700; margin-bottom: 0.75rem; }
-        p { color: rgba(248,251,255,.82); line-height: 1.7; margin-bottom: 1rem; }
-        /* Events chips moved to /events */
+        .panel:last-child { margin-bottom: 0; }
+        h1 { font-size: clamp(1.65rem, 3vw, 2rem); font-weight: 700; margin-bottom: 0.5rem; letter-spacing: 0.3px; }
+        .lede { color: var(--muted); font-size: 1.05rem; line-height: 1.65; margin-bottom: 1.25rem; max-width: 65ch; }
+        h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--text);
+            text-shadow: 0 0 18px rgba(0,229,255,.25);
+        }
+        h2:first-of-type { margin-top: 0.25rem; }
+        p { color: rgba(248,251,255,.82); line-height: 1.75; margin-bottom: 1rem; }
+        p:last-child { margin-bottom: 0; }
+        .accent-bar {
+            height: 4px;
+            width: 72px;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--neon1), var(--neon2), var(--neon3));
+            box-shadow: 0 0 14px rgba(0,229,255,.35);
+        }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+            margin-top: 0.75rem;
+        }
+        .person {
+            border: 1px solid rgba(255,255,255,.18);
+            background: rgba(255,255,255,.06);
+            border-radius: 16px;
+            padding: 1.15rem 1.2rem;
+        }
+        .person header {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            margin-bottom: 0.65rem;
+        }
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, rgba(255,61,242,.35), rgba(0,229,255,.28));
+            border: 1px solid rgba(255,255,255,.25);
+            flex-shrink: 0;
+        }
+        .person h3 { font-size: 1.05rem; font-weight: 600; margin: 0; }
+        .role { font-size: 0.88rem; color: var(--muted); margin-top: 0.15rem; }
+        .person p { font-size: 0.95rem; margin-bottom: 0; }
+        .values {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.85rem;
+            margin-top: 0.65rem;
+        }
+        .value-pill {
+            border: 1px solid rgba(255,255,255,.16);
+            border-radius: 14px;
+            padding: 0.85rem 1rem;
+            font-size: 0.95rem;
+            color: rgba(248,251,255,.85);
+            line-height: 1.55;
+        }
+        .value-pill strong { display: block; color: var(--text); margin-bottom: 0.35rem; font-size: 0.98rem; }
+        .timeline {
+            margin-top: 0.75rem;
+            border-left: 2px solid rgba(0,229,255,.35);
+            padding-left: 1.15rem;
+        }
+        .timeline li {
+            list-style: none;
+            position: relative;
+            padding-bottom: 1rem;
+            color: rgba(248,251,255,.82);
+            line-height: 1.65;
+            font-size: 0.97rem;
+        }
+        .timeline li:last-child { padding-bottom: 0; }
+        .timeline li::before {
+            content: '';
+            position: absolute;
+            left: -1.15rem;
+            top: 0.35rem;
+            width: 10px;
+            height: 10px;
+            margin-left: -5px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon2), var(--neon3));
+            box-shadow: 0 0 10px rgba(0,229,255,.5);
+        }
+        .timeline .year {
+            display: block;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
     </style>
 </head>
 <body>
     <div class="wrap">
         <div class="nav"><a href="/welcome">← Back to Home</a></div>
+
         <div class="panel">
+            <div class="accent-bar" aria-hidden="true"></div>
             <h1>About Us</h1>
-            <p>VulnWorld Gaming Cafe was founded by a small team of gamers who wanted a place to play, eat, and meet other players. We’re a local spot focused on good vibes and good food.</p>
-            <p>This page can be expanded later with owner bios, story, and photos.</p>
+            <p class="lede">VulnWorld started as a late-night idea between three friends who were tired of noisy bars and coffee shops that kicked you out the moment you plugged in a controller. We built a place where the volume knob goes up, the pizza stays hot, and strangers become squadmates.</p>
+            <h2>Our story</h2>
+            <p>We opened in a converted warehouse on Arcade Lane with a handful of restored cabinets and a dozen second-hand PCs. Word spread through local Discord servers and weekend pinball meetups. Today we’re still independently run: no franchise playbook, just staff who actually play the games on the floor.</p>
+            <p>Our kitchen runs parallel to the arcade—orders are tuned for quick turnaround so you’re not AFK from a tournament match for twenty minutes. From families with kids on racing sims to crews grinding ranked ladders, we try to keep the vibe welcoming and the rules simple.</p>
+        </div>
+
+        <div class="panel">
+            <h2>Meet the crew</h2>
+            <div class="team-grid">
+                <article class="person">
+                    <header>
+                        <div class="avatar" aria-hidden="true">MR</div>
+                        <div>
+                            <h3>Morgan Reyes</h3>
+                            <p class="role">Co-founder &amp; floor lead</p>
+                        </div>
+                    </header>
+                    <p>Former IT night-shift engineer and rhythm-game tragic. Keeps the cabinet roster fresh and runs Thursday “repair &amp; high score” hours.</p>
+                </article>
+                <article class="person">
+                    <header>
+                        <div class="avatar" aria-hidden="true">JT</div>
+                        <div>
+                            <h3>Jules Tan</h3>
+                            <p class="role">Co-founder &amp; kitchen</p>
+                        </div>
+                    </header>
+                    <p>Trained chef who insisted the fryer live next to the prize counter. Builds the seasonal menu and negotiates with suppliers who speak gamer.</p>
+                </article>
+                <article class="person">
+                    <header>
+                        <div class="avatar" aria-hidden="true">DK</div>
+                        <div>
+                            <h3>Dev Kapoor</h3>
+                            <p class="role">Co-founder &amp; LAN ops</p>
+                        </div>
+                    </header>
+                    <p>Runs network layout, tournament brackets, and the “please don’t torrent on guest Wi‑Fi” signs. Still enters every local fighting-game bracket.</p>
+                </article>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>What we care about</h2>
+            <div class="values">
+                <div class="value-pill"><strong>Fair play</strong> Clear rules, visible pricing, and staff who mediate disputes without drama.</div>
+                <div class="value-pill"><strong>Safety first</strong> Well-lit aisles, cable management we’re weirdly proud of, and allergen notes on the menu.</div>
+                <div class="value-pill"><strong>Community</strong> Local artists on the walls, charity streams in the LAN room, and mic etiquette that keeps voice chat usable.</div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Milestones</h2>
+            <ul class="timeline">
+                <li><span class="year">2019</span> Signed the Arcade Lane lease with more optimism than capital.</li>
+                <li><span class="year">2020</span> First pinball league night—twelve players, one stuck tilt sensor, zero regrets.</li>
+                <li><span class="year">2022</span> Expanded PC bays and added the streaming nook for charity marathon weekends.</li>
+                <li><span class="year">2024</span> Kitchen renovation: bigger pass-through window so you never miss your queue pop.</li>
+            </ul>
+        </div>
+
+        <div class="panel">
+            <h2>Visit in person</h2>
+            <p>We’re at <strong style="color:var(--text); font-weight:600;">123 Arcade Lane, Cyber City</strong>. For bookings, press, or private events, use the details on our <a href="/contact" style="color:#9aebff;">Contact</a> page—we read every message.</p>
         </div>
     </div>
 </body>
